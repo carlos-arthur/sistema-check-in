@@ -1,9 +1,3 @@
-updates futuros:Botao para editar o check-in,
-filtro por apartamento no historico,
-ddd+telefone juntos no mesmo campo,
-Lista que autocompleta os paises para determinar o codigo de país
-
-
 Sistema de Gestão de Check-in/Check-out
 
 Um sistema completo para gestão de hospedagem em hotéis, desenvolvido com Flask e Jinja2, com interface moderna baseada em cartões e funcionalidades avançadas.
@@ -200,6 +194,10 @@ Para dúvidas ou problemas:
 
 ## 📈 Futuras Melhorias
 
+- Botao para editar o check-in,
+- filtro por apartamento no historico,
+- ddd+telefone juntos no mesmo campo,
+- Lista que autocompleta os paises para determinar o codigo de país
 - Sistema de autenticação e usuários
 - Relatórios em PDF
 - Integração com sistemas de pagamento
