@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+
+{% block title %}Histórico - Sistema de Check-in/Check-out{% endblock %}
+
+{% block content %}
+<div class="page-header fade-in">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="page-title">Histórico</h1>
+            <p class="page-subtitle">Check-ins finalizados</p>
+        </div>
+        <div>
+            <a href="{{ url_for('checkin.novo_checkin') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i>
+                Novo Check-in
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Filtros -->
+<div class="card fade-in mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">
+            <i class="bi bi-funnel"></i>
+            Filtros de Pesquisa
+        </h5>
+    </div>
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('checkin.historico') }}">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="nome" class="form-label">Nome do Hóspede</label>
+                    <input type="text" class="form-control" id="nome" name="nome" value="{{ nome_filtro }}" placeholder="Digite o nome...">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="data_inicio" class="form-label">Data Início</label>
+                    <input type="date" class="form-control" id="data_inicio" name="data_inicio" value="{{ data_inicio }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="data_fim" class="form-label">Data Fim</label>
+                    <input type="date" class="form-control" id="data_fim" name="data_fim" value="{{ data_fim }}">
+                </div>
+                <div class="col-md-2 mb-3 d-flex align-items-end">
+                    <div class="d-flex gap-2 w-100">
+                        <button type="submit" class="btn btn-primary flex-fill">
+                            <i class="bi bi-search"></i>
+                            Filtrar
+                        </button>
+                        <a href="{{ url_for('checkin.historico') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if checkins %}
+<!-- Resultados -->
+<div class="row fade-in">
+    {% for checkin in checkins %}
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-0">
+                        <i class="bi bi-building"></i>
+                        Apartamento {{ checkin.numero_apartamento }}
+                    </h5>
+                </div>
+                <div>
+                    <span class="badge badge-secondary">{{ checkin.status }}</span>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if checkin.hospede_principal %}
+                <div class="mb-3">
+                    <h6 class="text-primary mb-2">
+                        <i class="bi bi-person-fill"></i>
+                        Hóspede Principal
+                    </h6>
+                    <p class="mb-1"><strong>{{ checkin.hospede_principal.nome_completo }}</strong></p>
+                    <p class="text-muted mb-1">
+                        <i class="bi bi-telephone"></i>
+                        {{ checkin.hospede_principal.telefone }}
+                    </p>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-envelope"></i>
+                        {{ checkin.hospede_principal.email }}
+                    </p>
+                </div>
+                {% endif %}
+                
+                <div class="mb-3">
+                    <h6 class="text-secondary mb-2">
+                        <i class="bi bi-calendar"></i>
+                        Período da Hospedagem
+                    </h6>
+                    <p class="mb-1">
+                        <strong>Check-in:</strong> 
+                        {{ checkin.data_checkin.strftime('%d/%m/%Y') }}
+                    </p>
+                    <p class="mb-1">
+                        <strong>Check-out:</strong> 
+                        {% if checkin.data_checkout %}
+                            {{ checkin.data_checkout.strftime('%d/%m/%Y') }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </p>
+                    <p class="mb-1">
+                        <strong>Duração:</strong>
+                        {% if checkin.data_checkout %}
+                            {% set duracao = (checkin.data_checkout - checkin.data_checkin).days %}
+                            {{ duracao }} dia{% if duracao != 1 %}s{% endif %}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </p>
+                    <p class="mb-0">
+                        <strong>Total de Hóspedes:</strong> 
+                        <span class="badge badge-secondary">{{ checkin.total_hospedes }}</span>
+                    </p>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent">
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('checkin.detalhes_checkin', checkin_id=checkin.id) }}" class="btn btn-outline-primary btn-sm flex-fill">
+                        <i class="bi bi-eye"></i>
+                        Ver Detalhes Completos
+                    </a>
+                    {% if checkin.hospede_principal and checkin.hospede_principal.telefone %}
+                    <a href="https://wa.me/{{ get_country_code_from_country(checkin.hospede_principal.pais) }}{{ checkin.hospede_principal.ddd }}{{ checkin.hospede_principal.telefone|replace(' ', '')|replace('-', '')|replace('(', '')|replace(')', '') }}" 
+                       target="_blank" 
+                       class="btn btn-success btn-sm">
+                        <i class="bi bi-whatsapp"></i>
+                        WhatsApp
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Estatísticas do Histórico -->
+<div class="row fade-in">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-bar-chart"></i>
+                    Estatísticas do Histórico
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="mb-2">
+                            <i class="bi bi-archive text-primary" style="font-size: 2rem;"></i>
+                        </div>
+                        <h4 class="text-primary">{{ checkins|length }}</h4>
+                        <p class="text-muted mb-0">Check-ins Finalizados</p>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-2">
+                            <i class="bi bi-people text-success" style="font-size: 2rem;"></i>
+                        </div>
+                        <h4 class="text-success">{{ checkins|sum(attribute='total_hospedes') }}</h4>
+                        <p class="text-muted mb-0">Total de Hóspedes</p>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-2">
+                            <i class="bi bi-building text-warning" style="font-size: 2rem;"></i>
+                        </div>
+                        <h4 class="text-warning">{{ checkins|map(attribute='numero_apartamento')|list|unique|list|length }}</h4>
+                        <p class="text-muted mb-0">Apartamentos Utilizados</p>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-2">
+                            <i class="bi bi-calendar-range text-info" style="font-size: 2rem;"></i>
+                        </div>
+                        <h4 class="text-info">
+                            {% if checkins %}
+                                {% set total_dias = checkins|selectattr('data_checkout')|map('attr', 'data_checkout')|list|length %}
+                                {% if total_dias > 0 %}
+                                    {% set soma_dias = 0 %}
+                                    {% for checkin in checkins if checkin.data_checkout %}
+                                        {% set soma_dias = soma_dias + (checkin.data_checkout - checkin.data_checkin).days %}
+                                    {% endfor %}
+                                    {{ (soma_dias / checkins|length)|round|int }}
+                                {% else %}
+                                    0
+                                {% endif %}
+                            {% else %}
+                                0
+                            {% endif %}
+                        </h4>
+                        <p class="text-muted mb-0">Média de Dias</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<div class="row fade-in">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <div class="mb-4">
+                    <i class="bi bi-search text-muted" style="font-size: 4rem;"></i>
+                </div>
+                {% if nome_filtro or data_inicio or data_fim %}
+                <h4 class="text-muted mb-3">Nenhum resultado encontrado</h4>
+                <p class="text-muted mb-4">Não foram encontrados check-ins com os filtros aplicados.</p>
+                <a href="{{ url_for('checkin.historico') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-x-circle"></i>
+                    Limpar Filtros
+                </a>
+                {% else %}
+                <h4 class="text-muted mb-3">Nenhum check-in finalizado</h4>
+                <p class="text-muted mb-4">Ainda não há histórico de check-ins finalizados.</p>
+                <a href="{{ url_for('checkin.novo_checkin') }}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i>
+                    Realizar Primeiro Check-in
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Animação de entrada para os cards
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            card.style.transition = 'all 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+});
+
+// Validação das datas
+document.getElementById('data_inicio').addEventListener('change', function() {
+    const dataInicio = this.value;
+    const dataFim = document.getElementById('data_fim').value;
+    
+    if (dataInicio && dataFim && dataInicio > dataFim) {
+        document.getElementById('data_fim').value = dataInicio;
+    }
+});
+
+document.getElementById('data_fim').addEventListener('change', function() {
+    const dataFim = this.value;
+    const dataInicio = document.getElementById('data_inicio').value;
+    
+    if (dataInicio && dataFim && dataFim < dataInicio) {
+        document.getElementById('data_inicio').value = dataFim;
+    }
+});
+</script>
+{% endblock %}
+

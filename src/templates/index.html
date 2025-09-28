@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Sistema de Check-in/Check-out{% endblock %}
+
+{% block content %}
+<div class="page-header fade-in">
+    <h1 class="page-title">Dashboard</h1>
+    <p class="page-subtitle">Bem-vindo ao sistema de gestão de hospedagem</p>
+</div>
+
+<div class="row fade-in">
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="bi bi-plus-circle-fill text-primary" style="font-size: 3rem;"></i>
+                </div>
+                <h5 class="card-title">Novo Check-in</h5>
+                <p class="card-text text-muted">Registre a entrada de novos hóspedes no hotel</p>
+                <a href="{{ url_for('checkin.novo_checkin') }}" class="btn btn-primary">
+                    <i class="bi bi-plus"></i>
+                    Iniciar Check-in
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="bi bi-clock-fill text-warning" style="font-size: 3rem;"></i>
+                </div>
+                <h5 class="card-title">Check-ins Ativos</h5>
+                <p class="card-text text-muted">Visualize e gerencie as hospedagens em andamento</p>
+                <a href="{{ url_for('checkin.checkins_ativos') }}" class="btn btn-warning">
+                    <i class="bi bi-eye"></i>
+                    Ver Ativos
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="bi bi-archive-fill text-success" style="font-size: 3rem;"></i>
+                </div>
+                <h5 class="card-title">Histórico</h5>
+                <p class="card-text text-muted">Consulte o histórico de check-ins finalizados</p>
+                <a href="{{ url_for('checkin.historico') }}" class="btn btn-success">
+                    <i class="bi bi-search"></i>
+                    Consultar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row fade-in">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-info-circle"></i>
+                    Sobre o Sistema
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Funcionalidades</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="bi bi-check-circle text-success me-2"></i>Registro de check-ins com múltiplos hóspedes</li>
+                            <li><i class="bi bi-check-circle text-success me-2"></i>Cálculo automático de idade</li>
+                            <li><i class="bi bi-check-circle text-success me-2"></i>Gestão de acompanhantes</li>
+                            <li><i class="bi bi-check-circle text-success me-2"></i>Controle de check-outs</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Recursos</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="bi bi-check-circle text-success me-2"></i>Interface responsiva e moderna</li>
+                            <li><i class="bi bi-check-circle text-success me-2"></i>Histórico completo de hospedagens</li>
+                            <li><i class="bi bi-check-circle text-success me-2"></i>Filtros de pesquisa avançados</li>
+                            <li><i class="bi bi-check-circle text-success me-2"></i>Banco de dados local (SQLite)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,383 @@
+{% extends "base.html" %}
+
+{% block title %}Novo Check-in - Sistema de Check-in/Check-out{% endblock %}
+
+{% block content %}
+<div class="page-header fade-in">
+    <h1 class="page-title">Novo Check-in</h1>
+    <p class="page-subtitle">Registre a entrada de novos hóspedes</p>
+</div>
+
+<div class="card fade-in">
+    <div class="card-header">
+        <h5 class="mb-0">
+            <i class="bi bi-person-plus"></i>
+            Formulário de Check-in
+        </h5>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('checkin.criar_checkin') }}" id="checkinForm">
+            <!-- Informações do Apartamento -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h6 class="text-primary mb-3">
+                        <i class="bi bi-building"></i>
+                        Informações do Apartamento
+                    </h6>
+                </div>
+                <div class="col-md-4">
+                    <label for="numero_apartamento" class="form-label">Número do Apartamento *</label>
+                    <input type="text" class="form-control" id="numero_apartamento" name="numero_apartamento" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="data_checkout_prevista" class="form-label">Data de Check-out Prevista *</label>
+                    <input type="date" class="form-control" id="data_checkout_prevista" name="data_checkout_prevista" required>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Dados do Hóspede Principal -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h6 class="text-primary mb-3">
+                        <i class="bi bi-person-fill"></i>
+                        Dados do Hóspede Principal
+                    </h6>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="nome_completo" class="form-label">Nome Completo *</label>
+                    <input type="text" class="form-control" id="nome_completo" name="nome_completo" required>
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label for="data_nascimento" class="form-label">Data de Nascimento *</label>
+                    <input type="date" class="form-control" id="data_nascimento" name="data_nascimento" required onchange="calcularIdade()">
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label for="idade" class="form-label">Idade</label>
+                    <input type="number" class="form-control" id="idade" name="idade" readonly>
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label for="documento" class="form-label">Documento (RG/Passaporte) *</label>
+                    <input type="text" class="form-control" id="documento" name="documento" required>
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label for="orgao_expedidor" class="form-label">Órgão Expedidor</label>
+                    <input type="text" class="form-control" id="orgao_expedidor" name="orgao_expedidor" placeholder="Ex: SSP, DETRAN">
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label for="uf_documento" class="form-label">UF</label>
+                    <select class="form-control" id="uf_documento" name="uf_documento">
+                        <option value="">Selecione a UF</option>
+                        <option value="AC">AC</option>
+                        <option value="AL">AL</option>
+                        <option value="AP">AP</option>
+                        <option value="AM">AM</option>
+                        <option value="BA">BA</option>
+                        <option value="CE">CE</option>
+                        <option value="DF">DF</option>
+                        <option value="ES">ES</option>
+                        <option value="GO">GO</option>
+                        <option value="MA">MA</option>
+                        <option value="MT">MT</option>
+                        <option value="MS">MS</option>
+                        <option value="MG">MG</option>
+                        <option value="PA">PA</option>
+                        <option value="PB">PB</option>
+                        <option value="PR">PR</option>
+                        <option value="PE">PE</option>
+                        <option value="PI">PI</option>
+                        <option value="RJ">RJ</option>
+                        <option value="RN">RN</option>
+                        <option value="RS">RS</option>
+                        <option value="RO">RO</option>
+                        <option value="RR">RR</option>
+                        <option value="SC">SC</option>
+                        <option value="SP">SP</option>
+                        <option value="SE">SE</option>
+                        <option value="TO">TO</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label for="cpf" class="form-label">CPF</label>
+                    <input type="text" class="form-control" id="cpf" name="cpf" placeholder="000.000.000-00">
+                </div>
+                
+                <div class="col-md-8 mb-3">
+                    <label for="endereco" class="form-label">Endereço</label>
+                    <input type="text" class="form-control" id="endereco" name="endereco">
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label for="cep" class="form-label">CEP</label>
+                    <input type="text" class="form-control" id="cep" name="cep" placeholder="00000-000">
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label for="cidade" class="form-label">Cidade</label>
+                    <input type="text" class="form-control" id="cidade" name="cidade">
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label for="estado" class="form-label">Estado</label>
+                    <input type="text" class="form-control" id="estado" name="estado">
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label for="pais" class="form-label">País</label>
+                    <input type="text" class="form-control" id="pais" name="pais" value="Brasil">
+                </div>
+                
+                <div class="col-md-2 mb-3">
+                    <label for="ddd" class="form-label">DDD *</label>
+                    <input type="text" class="form-control" id="ddd" name="ddd" placeholder="11" maxlength="2" required>
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label for="telefone" class="form-label">Telefone *</label>
+                    <input type="tel" class="form-control" id="telefone" name="telefone" placeholder="99999-9999" required>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="email" class="form-label">E-mail</label>
+                    <input type="email" class="form-control" id="email" name="email">
+                </div>
+                
+                <div class="col-12 mb-3">
+                    <label for="observacoes" class="form-label">Observações</label>
+                    <textarea class="form-control" id="observacoes" name="observacoes" rows="3" placeholder="Informações adicionais sobre o hóspede..."></textarea>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Acompanhantes -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="text-primary mb-0">
+                            <i class="bi bi-people-fill"></i>
+                            Acompanhantes
+                        </h6>
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="adicionarAcompanhante()">
+                            <i class="bi bi-plus"></i>
+                            Adicionar Acompanhante
+                        </button>
+                    </div>
+                    <div id="acompanhantes-container">
+                        <!-- Acompanhantes serão adicionados aqui dinamicamente -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i>
+                            Realizar Check-in
+                        </button>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i>
+                            Cancelar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let contadorAcompanhantes = 0;
+
+function calcularIdade() {
+    const dataNascimento = document.getElementById('data_nascimento').value;
+    if (dataNascimento) {
+        const hoje = new Date();
+        const nascimento = new Date(dataNascimento);
+        let idade = hoje.getFullYear() - nascimento.getFullYear();
+        const mes = hoje.getMonth() - nascimento.getMonth();
+        
+        if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
+            idade--;
+        }
+        
+        document.getElementById('idade').value = idade;
+    }
+}
+
+function calcularIdadeAcompanhante(index) {
+    const dataNascimento = document.getElementById(`acompanhante_${index}_data_nascimento`).value;
+    if (dataNascimento) {
+        const hoje = new Date();
+        const nascimento = new Date(dataNascimento);
+        let idade = hoje.getFullYear() - nascimento.getFullYear();
+        const mes = hoje.getMonth() - nascimento.getMonth();
+        
+        if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
+            idade--;
+        }
+        
+        document.getElementById(`acompanhante_${index}_idade`).value = idade;
+    }
+}
+
+function adicionarAcompanhante() {
+    const container = document.getElementById('acompanhantes-container');
+    const acompanhanteHtml = `
+        <div class="card mb-3 acompanhante-card" id="acompanhante_${contadorAcompanhantes}">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">Acompanhante ${contadorAcompanhantes + 1}</h6>
+                <button type="button" class="btn btn-outline-danger btn-sm" onclick="removerAcompanhante(${contadorAcompanhantes})">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="acompanhante_${contadorAcompanhantes}_nome_completo" class="form-label">Nome Completo *</label>
+                        <input type="text" class="form-control" id="acompanhante_${contadorAcompanhantes}_nome_completo" name="acompanhante_${contadorAcompanhantes}_nome_completo" required>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <label for="acompanhante_${contadorAcompanhantes}_data_nascimento" class="form-label">Data de Nascimento *</label>
+                        <input type="date" class="form-control" id="acompanhante_${contadorAcompanhantes}_data_nascimento" name="acompanhante_${contadorAcompanhantes}_data_nascimento" required onchange="calcularIdadeAcompanhante(${contadorAcompanhantes})">
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <label for="acompanhante_${contadorAcompanhantes}_idade" class="form-label">Idade</label>
+                        <input type="number" class="form-control" id="acompanhante_${contadorAcompanhantes}_idade" name="acompanhante_${contadorAcompanhantes}_idade" readonly>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label for="acompanhante_${contadorAcompanhantes}_documento" class="form-label">Documento *</label>
+                        <input type="text" class="form-control" id="acompanhante_${contadorAcompanhantes}_documento" name="acompanhante_${contadorAcompanhantes}_documento" required>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label for="acompanhante_${contadorAcompanhantes}_orgao_expedidor" class="form-label">Órgão Expedidor</label>
+                        <input type="text" class="form-control" id="acompanhante_${contadorAcompanhantes}_orgao_expedidor" name="acompanhante_${contadorAcompanhantes}_orgao_expedidor" placeholder="Ex: SSP, DETRAN">
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label for="acompanhante_${contadorAcompanhantes}_uf_documento" class="form-label">UF</label>
+                        <select class="form-control" id="acompanhante_${contadorAcompanhantes}_uf_documento" name="acompanhante_${contadorAcompanhantes}_uf_documento">
+                            <option value="">Selecione a UF</option>
+                            <option value="AC">AC</option>
+                            <option value="AL">AL</option>
+                            <option value="AP">AP</option>
+                            <option value="AM">AM</option>
+                            <option value="BA">BA</option>
+                            <option value="CE">CE</option>
+                            <option value="DF">DF</option>
+                            <option value="ES">ES</option>
+                            <option value="GO">GO</option>
+                            <option value="MA">MA</option>
+                            <option value="MT">MT</option>
+                            <option value="MS">MS</option>
+                            <option value="MG">MG</option>
+                            <option value="PA">PA</option>
+                            <option value="PB">PB</option>
+                            <option value="PR">PR</option>
+                            <option value="PE">PE</option>
+                            <option value="PI">PI</option>
+                            <option value="RJ">RJ</option>
+                            <option value="RN">RN</option>
+                            <option value="RS">RS</option>
+                            <option value="RO">RO</option>
+                            <option value="RR">RR</option>
+                            <option value="SC">SC</option>
+                            <option value="SP">SP</option>
+                            <option value="SE">SE</option>
+                            <option value="TO">TO</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label for="acompanhante_${contadorAcompanhantes}_cpf" class="form-label">CPF</label>
+                        <input type="text" class="form-control" id="acompanhante_${contadorAcompanhantes}_cpf" name="acompanhante_${contadorAcompanhantes}_cpf" placeholder="000.000.000-00">
+                    </div>
+                    
+                    <div class="col-md-2 mb-3">
+                        <label for="acompanhante_${contadorAcompanhantes}_ddd" class="form-label">DDD</label>
+                        <input type="text" class="form-control" id="acompanhante_${contadorAcompanhantes}_ddd" name="acompanhante_${contadorAcompanhantes}_ddd" placeholder="11" maxlength="2">
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label for="acompanhante_${contadorAcompanhantes}_telefone" class="form-label">Telefone</label>
+                        <input type="tel" class="form-control" id="acompanhante_${contadorAcompanhantes}_telefone" name="acompanhante_${contadorAcompanhantes}_telefone" placeholder="99999-9999">
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="acompanhante_${contadorAcompanhantes}_email" class="form-label">E-mail</label>
+                        <input type="email" class="form-control" id="acompanhante_${contadorAcompanhantes}_email" name="acompanhante_${contadorAcompanhantes}_email">
+                    </div>
+                    
+                    <div class="col-12 mb-3">
+                        <label for="acompanhante_${contadorAcompanhantes}_observacoes" class="form-label">Observações</label>
+                        <textarea class="form-control" id="acompanhante_${contadorAcompanhantes}_observacoes" name="acompanhante_${contadorAcompanhantes}_observacoes" rows="2"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    container.insertAdjacentHTML('beforeend', acompanhanteHtml);
+    contadorAcompanhantes++;
+    
+    // Animar a entrada do novo card
+    const novoCard = container.lastElementChild;
+    novoCard.style.opacity = '0';
+    novoCard.style.transform = 'translateY(20px)';
+    setTimeout(() => {
+        novoCard.style.transition = 'all 0.3s ease';
+        novoCard.style.opacity = '1';
+        novoCard.style.transform = 'translateY(0)';
+    }, 10);
+}
+
+function removerAcompanhante(index) {
+    const card = document.getElementById(`acompanhante_${index}`);
+    if (card) {
+        card.style.transition = 'all 0.3s ease';
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(-20px)';
+        setTimeout(() => {
+            card.remove();
+        }, 300);
+    }
+}
+
+// Validação do formulário
+document.getElementById('checkinForm').addEventListener('submit', function(e) {
+    const requiredFields = this.querySelectorAll('input[required], textarea[required]');
+    let isValid = true;
+    
+    requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+            field.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            field.classList.remove('is-invalid');
+        }
+    });
+    
+    if (!isValid) {
+        e.preventDefault();
+        alert('Por favor, preencha todos os campos obrigatórios.');
+    }
+});
+</script>
+{% endblock %}
+
