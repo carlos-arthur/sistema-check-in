@@ -195,13 +195,10 @@ Para dúvidas ou problemas:
 ## 📈 Futuras Melhorias
 
 - Botao para editar o check-in,
-- filtro por apartamento no historico,
-- ddd+telefone juntos no mesmo campo,
+- filtro por apartamento no historico
+- ddd+telefone juntos no mesmo campo
 - Lista que autocompleta os paises para determinar o codigo de país
-- Sistema de autenticação e usuários
 - Relatórios em PDF
-- Integração com sistemas de pagamento
-- API REST para integração com outros sistemas
 - Dashboard com gráficos e estatísticas
 - Sistema de notificações
 - Backup automático
